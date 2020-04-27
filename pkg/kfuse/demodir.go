@@ -1,4 +1,4 @@
-package kubefs
+package kfuse
 
 import (
 	"bazil.org/fuse/fs"

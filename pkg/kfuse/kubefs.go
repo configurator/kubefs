@@ -1,4 +1,4 @@
-package kubefs
+package kfuse
 
 import (
 	"os"
