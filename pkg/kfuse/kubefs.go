@@ -12,6 +12,8 @@ import (
 type KubeFS struct {
 	Uid uint32
 	Gid uint32
+
+	RootDir fs.Node
 }
 
 func (f *KubeFS) ReadCurrentUser() error {
@@ -35,7 +37,7 @@ func (f *KubeFS) ReadCurrentUser() error {
 }
 
 func (f *KubeFS) Root() (fs.Node, error) {
-	return DemoDir(f), nil
+	return f.RootDir, nil
 }
 
 func (mo *KubeFS) defaultAttr(modeFlags os.FileMode, attr *fuse.Attr) error {
