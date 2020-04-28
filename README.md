@@ -47,7 +47,7 @@ Mounts the default kubernetes cluster onto dir.
   Unmounts a previously mounted directory. This will stop the process serving it, and will also work
   if that process has been killed uncleanly.
 
-- `--kubeconfig`:
+- `-c`, `--kubeconfig`:
 
   Like in `kubectl`, you can use the `--kubeconfig` flag to specify an alternate
   `kube.config` file, or pass the `KUBECONFIG` environment flag. All contexts in the passed config

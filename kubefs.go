@@ -23,7 +23,7 @@ func main() {
 	}
 
 	unmount := pflag.BoolP("unmount", "u", false, "Unmount")
-	kubeconfig := pflag.StringP("kubeconfig", "p", "", "absolute path to the kubeconfig file")
+	kubeconfig := pflag.StringP("kubeconfig", "c", "", "absolute path to the kubeconfig file")
 
 	pflag.Parse()
 	args := pflag.Args()
