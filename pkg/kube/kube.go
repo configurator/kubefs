@@ -1,6 +1,7 @@
 package kube
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -49,22 +50,42 @@ func (k *Kubernetes) LoadConfig(kubeconfig string) error {
 	}
 
 	k.config = config
-	k.createContextsMap()
+	err = k.createContextsMap()
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
 
 	return nil
 }
 
-func (k *Kubernetes) createContextsMap() {
+func (k *Kubernetes) createContextsMap() error {
+	config := k.config
+
 	k.Contexts = map[string]Context{}
-	if k.config == nil {
-		return
+	if config == nil {
+		fmt.Println("config == nil")
+		return nil
 	}
 
 	for name, context := range k.config.Contexts {
+		clientConfig := clientcmd.NewDefaultClientConfig(*config, &clientcmd.ConfigOverrides{
+			Context: *context,
+		})
+
+		restConfig, err := clientConfig.ClientConfig()
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
 		k.Contexts[name] = Context{
-			k.config,
-			context,
-			name,
+			config:     k.config,
+			restConfig: restConfig,
+			context:    context,
+			Name:       name,
 		}
 	}
+
+	return nil
 }
