@@ -25,14 +25,11 @@ func (g *GlobalResource) readDirNames(kfs *kfuse.KubeFS) ([]string, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Printf("%#v\n", g.Resource)
 	gvr := schema.GroupVersionResource{
 		Group:    g.Resource.Group,
 		Version:  g.Resource.Version,
 		Resource: g.Resource.Name,
 	}
-
-	fmt.Println(gvr)
 
 	list, err := d.Resource(gvr).List(metav1.ListOptions{})
 	if err != nil {

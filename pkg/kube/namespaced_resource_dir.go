@@ -70,14 +70,11 @@ func (n *NamespacedResourceWithNamespace) readDirNames(kfs *kfuse.KubeFS) ([]str
 		fmt.Println(err)
 		return nil, err
 	}
-	fmt.Printf("%#v\n", n.Resource)
 	gvr := schema.GroupVersionResource{
 		Group:    n.Resource.Group,
 		Version:  n.Resource.Version,
 		Resource: n.Resource.Name,
 	}
-
-	fmt.Println(gvr)
 
 	list, err := d.Resource(gvr).Namespace(n.Namespace).List(metav1.ListOptions{})
 	if err != nil {

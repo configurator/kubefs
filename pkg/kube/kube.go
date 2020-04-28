@@ -64,7 +64,7 @@ func (k *Kubernetes) createContextsMap() error {
 
 	k.Contexts = map[string]Context{}
 	if config == nil {
-		fmt.Println("config == nil")
+		fmt.Println("Error in createContextsMap(): config == nil")
 		return nil
 	}
 
