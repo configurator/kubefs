@@ -2,6 +2,7 @@ package kube
 
 import (
 	"fmt"
+	"strings"
 
 	"bazil.org/fuse/fs"
 	"github.com/configurator/kubefs/pkg/kfuse"
@@ -41,11 +42,25 @@ func (g *GlobalResource) readDirNames(kfs *kfuse.KubeFS) ([]string, error) {
 
 	result := []string{}
 	for _, i := range list.Items {
-		result = append(result, i.GetName())
+		result = append(result, i.GetName()+".yaml")
 	}
 	return result, nil
 }
 
 func (g *GlobalResource) lookupNode(kfs *kfuse.KubeFS, name string) (fs.Node, error) {
-	return nil, nil
+	extension := "yaml"
+	if dot := strings.LastIndex(name, "."); dot != -1 {
+		extension = name[dot+1:]
+		name = name[0:dot]
+	}
+
+	return (&Item{
+		config:     g.config,
+		restConfig: g.restConfig,
+		context:    g.context,
+		Resource:   g.Resource,
+		Namespace:  "",
+		Name:       name,
+		Extension:  extension,
+	}).ToFile(kfs), nil
 }
