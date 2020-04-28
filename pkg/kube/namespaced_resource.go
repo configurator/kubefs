@@ -10,6 +10,10 @@ type NamespacedResource struct {
 	config     *clientcmdapi.Config
 	restConfig *rest.Config
 	context    *clientcmdapi.Context
-	Name       string
 	Resource   metav1.APIResource
+}
+
+type NamespacedResourceWithNamespace struct {
+	*NamespacedResource
+	Namespace string
 }

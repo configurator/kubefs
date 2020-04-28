@@ -60,7 +60,6 @@ func (c *Context) loadResources(kfs *kfuse.KubeFS) error {
 					config:     c.config,
 					restConfig: c.restConfig,
 					context:    c.context,
-					Name:       r.Name,
 					Resource:   r,
 				}).ToDir(kfs)
 			} else {
@@ -68,7 +67,6 @@ func (c *Context) loadResources(kfs *kfuse.KubeFS) error {
 					config:     c.config,
 					restConfig: c.restConfig,
 					context:    c.context,
-					Name:       r.Name,
 					Resource:   r,
 				}).ToDir(kfs)
 			}

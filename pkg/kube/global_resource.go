@@ -10,6 +10,5 @@ type GlobalResource struct {
 	config     *clientcmdapi.Config
 	restConfig *rest.Config
 	context    *clientcmdapi.Context
-	Name       string
 	Resource   metav1.APIResource
 }
