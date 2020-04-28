@@ -2,6 +2,8 @@
 
 Mount kubernetes's metadata object store as a file system
 
+![Screenshot](.screenshots/kubefs.screenshot.png)
+
 # Downloading
 
 There are several options for downloading kubefs:
