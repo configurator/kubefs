@@ -82,6 +82,16 @@ that tries to read them
 # Ideas for exploring
 
 - Use `find <dir>` to see an entire listing of all kubernetes objects.
+
 - Open the directory in an IDE to look around
+
 - Snapshot the entire kubernetes object store by copying directory contents - though restoring isn't
   currently possible, you'd have a backup of each individual object.
+
+# Some more screenshots
+
+![Linux file listing](.screenshots/linux-file-list.jpg)
+
+![Browsing in IDE](.screenshots/vscode.jpg)
+
+![Looking at yaml and json](.screenshot/cat-file-types.jpg)
