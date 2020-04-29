@@ -9,9 +9,15 @@ jobs:
           - os: ubuntu-latest
             goos: linux
             goarch: amd64
+
           - os: macos-latest
             goos: darwin
             goarch: amd64
+          
+          - os: windows-latest
+            goos: windows
+            goarch: 386
+            cgo-enabled: 0
           - os: windows-latest
             goos: windows
             goarch: amd64
