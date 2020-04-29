@@ -6,27 +6,44 @@ jobs:
     strategy:
       matrix:
         include:
-          - goos: linux
+          - os: ubuntu-latest
+            goos: linux
             goarch: amd64
-          - goos: darwin
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+          - os: windows-latest
+            goos: windows
             goarch: amd64
       fail-fast: false
-    runs-on: ubuntu-latest
-    name: Build
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.goos }}-${{ matrix.goarch }}
+    env:
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
     steps:
-      - name: Install libfuse
+      - name: Install libfuse (Linux)
+        if: ${{ matrix.goos == 'linux' }}
         run: sudo apt-get install libfuse-dev
+
+      - name: Install osxfuse (Mac)
+        if: ${{ matrix.goos == 'darwin' }}
+        run: brew cask install osxfuse
+
+      - name: Install WinFsp (Windows)
+        if: ${{matrix.goos == 'windows' }}
+        run: choco install winfsp
 
       - name: Install Go
         uses: actions/setup-go@v2
 
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Download dependencies
+        run: go mod download
 
       - name: Build
-        env:
-          GOOS: ${{ matrix.goos }}
-          GOARCH: ${{ matrix.goarch }}
         run: go build -o dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }} .
 
       - name: Upload build artifacts
