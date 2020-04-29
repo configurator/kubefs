@@ -110,6 +110,5 @@ that tries to read them
 # Roadmap
 
 - [x] Read only
-- [] Edit files
-- [] Add a file
-- [] Windows support
+- [ ] Edit files
+- [ ] Add a file
