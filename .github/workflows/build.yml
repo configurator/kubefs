@@ -41,7 +41,7 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-        run: go build . -o kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
+        run: go build -o kubefs-${{ matrix.goos }}-${{ matrix.goarch }} .
 
       - name: Upload build artifacts
         if: steps.already-built.outputs.cache-hit != 'true'
