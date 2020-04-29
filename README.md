@@ -35,6 +35,17 @@ There are several options for downloading kubefs:
 
   instead of a `kubefs` binary.
 
+# Dependencies
+
+For MacOS you will need osxfuse:
+https://github.com/osxfuse/osxfuse/releases
+
+or you can install with brew formula:
+
+```shell
+$ brew install osxfuse
+```
+
 # Usage
 
 ```shell
@@ -95,3 +106,10 @@ that tries to read them
 ![Browsing in IDE](.screenshots/vscode.jpg)
 
 ![Looking at yaml and json](.screenshots/cat-file-types.jpg)
+
+# Roadmap
+
+- [x] Read only
+- [] Edit files
+- [] Add a file
+- [] Windows support
