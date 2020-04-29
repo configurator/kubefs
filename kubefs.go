@@ -75,36 +75,3 @@ func cleanPathAndValidateEmptyDir(mountpoint string) (string, error) {
 
 	return mountpoint, nil
 }
-
-// func mount(mountpoint string, k *kube.Kubernetes) error {
-// 	mountpoint, err := cleanPathAndValidateEmptyDir(mountpoint)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	c, err := fuse.Mount(mountpoint)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	defer c.Close()
-
-// 	kfs := &kfuse.KubeFS{}
-// 	err = kfs.ReadCurrentUser()
-// 	if err != nil {
-// 		fmt.Println("Could not read current uid and gid; defaulting to root")
-// 	}
-// 	kfs.RootDir = k.ToDir(kfs)
-
-// 	fmt.Println("Mounting kubefs on " + mountpoint)
-// 	err = fs.Serve(c, kfs)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	<-c.Ready
-// 	if c.MountError != nil {
-// 		return c.MountError
-// 	}
-
-// 	return nil
-// }
