@@ -34,8 +34,10 @@ func (i *Item) ReadEntireContents() ([]byte, error) {
 		} else {
 			data, err = json.Marshal(object)
 		}
-	default:
+	case "", "yaml":
 		data, err = yaml.Marshal(object)
+	default:
+		err = &f.ErrorNotFound{}
 	}
 	if err != nil {
 		return nil, err
