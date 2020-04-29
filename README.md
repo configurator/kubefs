@@ -94,4 +94,4 @@ that tries to read them
 
 ![Browsing in IDE](.screenshots/vscode.jpg)
 
-![Looking at yaml and json](.screenshot/cat-file-types.jpg)
+![Looking at yaml and json](.screenshots/cat-file-types.jpg)
