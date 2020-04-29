@@ -13,7 +13,7 @@ import (
 	"bazil.org/fuse/fs"
 
 	"github.com/configurator/kubefs/pkg/kfuse"
-	"github.com/configurator/kubefs/pkg/kube"
+	kube "github.com/configurator/kubefs/pkg/kube_old"
 )
 
 func main() {
