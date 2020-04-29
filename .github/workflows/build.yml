@@ -18,10 +18,12 @@ jobs:
             goos: windows
             goarch: 386
             cgo-enabled: 0
+            extension: .exe
           - os: windows-latest
             goos: windows
             goarch: amd64
             cgo-enabled: 0
+            extension: .exe
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.goos }}-${{ matrix.goarch }}
@@ -52,10 +54,10 @@ jobs:
         run: go mod download
 
       - name: Build
-        run: go build -o dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }} .
+        run: go build -o dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} .
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
+          name: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
+          path: dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
