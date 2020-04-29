@@ -20,7 +20,6 @@ func main() {
 		pflag.PrintDefaults()
 	}
 
-	unmount := pflag.BoolP("unmount", "u", false, "Unmount")
 	kubeconfig := pflag.StringP("kubeconfig", "c", "", "absolute path to the kubeconfig file")
 
 	pflag.Parse()
@@ -32,22 +31,13 @@ func main() {
 
 	mountpoint := args[0]
 
-	if *unmount {
-		// fuse.New
-		// err := fuse.Unmount(mountpoint)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// 	os.Exit(1)
-		// }
-	} else {
-		k := &kube.Kubernetes{}
-		k.LoadConfig(*kubeconfig)
+	k := &kube.Kubernetes{}
+	k.LoadConfig(*kubeconfig)
 
-		fs := &f.FS{Root: k}
+	fs := &f.FS{Root: k}
 
-		h := fuse.NewFileSystemHost(fs)
-		h.Mount(mountpoint, nil)
-	}
+	h := fuse.NewFileSystemHost(fs)
+	h.Mount(mountpoint, nil)
 }
 
 func cleanPathAndValidateEmptyDir(mountpoint string) (string, error) {
