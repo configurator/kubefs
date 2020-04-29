@@ -15,12 +15,14 @@ jobs:
           - os: windows-latest
             goos: windows
             goarch: amd64
+            cgo-enabled: 0
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.goos }}-${{ matrix.goarch }}
     env:
       GOOS: ${{ matrix.goos }}
       GOARCH: ${{ matrix.goarch }}
+      CGO_ENABLED: ${{ matrix.cgo-enabled }}
     steps:
       - name: Install libfuse (Linux)
         if: ${{ matrix.goos == 'linux' }}
