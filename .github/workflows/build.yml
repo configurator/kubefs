@@ -1,0 +1,26 @@
+name: Build
+on:
+  - pull_request
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+          - goos: darwin
+            goarch: amd64
+      fail-fast: false
+    runs-on: ubuntu-latest
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+        run: go build . -o kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
