@@ -7,7 +7,7 @@ import (
 
 type Dir interface {
 	Node
-	List() (map[string]Node, error)
+	List() ([]string, error)
 	Get(string) (Node, error)
 }
 
@@ -41,10 +41,8 @@ func (fs *FS) Readdir(path string,
 
 	fill(".", nil, 0)
 	fill("..", nil, 0)
-	for name, child := range children {
-		stat := &fuse.Stat_t{}
-		fullStat(child, stat)
-		fill(name, stat, 0)
+	for _, name := range children {
+		fill(name, nil, 0)
 	}
 	return 0
 }

@@ -19,7 +19,7 @@ func (e *ErrorNotFound) Error() string {
 	return fmt.Sprintf("Path %s not found", e.Path)
 }
 func (e *ErrorNotFound) ErrorCode() int {
-	return -errno.ENOENT
+	return errno.ENOENT
 }
 
 type ErrorAccessDenied struct {
@@ -30,7 +30,7 @@ func (e *ErrorAccessDenied) Error() string {
 	return fmt.Sprintf("Access denied to path %s", e.Path)
 }
 func (e *ErrorAccessDenied) ErrorCode() int {
-	return -errno.EACCES
+	return errno.EACCES
 }
 
 type ErrorNotADirectory struct {
@@ -41,7 +41,7 @@ func (e *ErrorNotADirectory) Error() string {
 	return fmt.Sprintf("%s is not a directory", e.Path)
 }
 func (e *ErrorNotADirectory) ErrorCode() int {
-	return -errno.ENOTDIR
+	return errno.ENOTDIR
 }
 
 type ErrorUnknown struct {
@@ -53,7 +53,7 @@ func (e *ErrorUnknown) Error() string {
 	return fmt.Sprintf("Error %s accessing path %s", e.Message, e.Path)
 }
 func (e *ErrorUnknown) ErrorCode() int {
-	return -errno.EUNKNOWN
+	return errno.EUNKNOWN
 }
 
 type ErrorNotImplemented struct{}
@@ -62,5 +62,5 @@ func (e *ErrorNotImplemented) Error() string {
 	return "Not implemented"
 }
 func (e *ErrorNotImplemented) ErrorCode() int {
-	return -errno.EOPNOTSUPP
+	return errno.EOPNOTSUPP
 }
