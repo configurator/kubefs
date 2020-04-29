@@ -1,0 +1,112 @@
+name: Build and release
+on:
+  push:
+    tags:
+      - v*
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            goos: linux
+            goarch: amd64
+
+          - os: macos-latest
+            goos: darwin
+            goarch: amd64
+          
+          - os: windows-latest
+            goos: windows
+            goarch: 386
+            cgo-enabled: 0
+            extension: .exe
+          - os: windows-latest
+            goos: windows
+            goarch: amd64
+            cgo-enabled: 0
+            extension: .exe
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.goos }}-${{ matrix.goarch }}
+    env:
+      GOOS: ${{ matrix.goos }}
+      GOARCH: ${{ matrix.goarch }}
+      CGO_ENABLED: ${{ matrix.cgo-enabled }}
+    steps:
+      - name: Install libfuse (Linux)
+        if: ${{ matrix.goos == 'linux' }}
+        run: sudo apt-get install libfuse-dev
+
+      - name: Install osxfuse (Mac)
+        if: ${{ matrix.goos == 'darwin' }}
+        run: brew cask install osxfuse
+
+      - name: Install WinFsp (Windows)
+        if: ${{matrix.goos == 'windows' }}
+        run: choco install winfsp
+
+      - name: Install Go
+        uses: actions/setup-go@v2
+
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build
+        run: go build -o dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }} .
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
+          path: dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }}${{ matrix.extension }}
+  release:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create-release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+      
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+      
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: dist/kubefs-linux-amd64
+          asset_name: kubefs-linux-amd64
+          asset_content_type: application/x-executable
+      
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: dist/kubefs-darwin-amd64
+          asset_name: kubefs-darwin-amd64
+          asset_content_type: application/x-mach-executable
+      
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: dist/kubefs-windows-amd64
+          asset_name: kubefs-windows-amd64
+          asset_content_type: application/vnd.microsoft.portable-executable
+      
+      - name: Upload release assets
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: dist/kubefs-windows-386
+          asset_name: kubefs-windows-386
+          asset_content_type: application/vnd.microsoft.portable-executable
