@@ -1,5 +1,7 @@
 # kubefs
 
+![Build status](https://github.com/configurator/kubefs/workflows/Build/badge.svg)
+
 Mount kubernetes's metadata object store as a file system
 
 ![Screenshot](.screenshots/kubefs.screenshot.png)
