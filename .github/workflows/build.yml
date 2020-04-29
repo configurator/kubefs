@@ -14,37 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - name: Skip rebuilds
-        id: already-built
-        uses: actions/cache@v1
-        with:
-          key: build-output-${{ matrix.goos }}-${{ matrix.goarch }}-${{ hashFiles('**/*.{go,mod,sum}') }}
-          path: dist
-
-      - name: Cache go modules
-        if: steps.already-built.outputs.cache-hit != 'true'
-        uses: actions/cache@v1
-        with:
-          key: go-mod-cache
-          path: ~/go/pkg/mod
-
       - name: Checkout
-        if: steps.already-built.outputs.cache-hit != 'true'
         uses: actions/checkout@v2
 
       - name: Install Go
-        if: steps.already-built.outputs.cache-hit != 'true'
         uses: actions/setup-go@v2
 
       - name: Build
-        if: steps.already-built.outputs.cache-hit != 'true'
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: go build -o dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }} .
 
       - name: Upload build artifacts
-        if: steps.already-built.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v2
         with:
           name: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
