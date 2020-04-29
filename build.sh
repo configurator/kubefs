@@ -43,6 +43,6 @@ do
     fi
 
     echo "Building for $platform..."
-    go build -o "$out" "$package" || echo "$platform" >> unsupported-platforms
+    go build -o "$out" "$package"
     echo
 done
