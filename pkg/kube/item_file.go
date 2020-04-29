@@ -29,12 +29,21 @@ func (i *Item) ReadEntireContents() ([]byte, error) {
 	var data []byte
 	switch i.Extension {
 	case "json":
-		data, err = json.Marshal(object)
+		if r.Context.PrettyJson {
+			data, err = json.MarshalIndent(object, "", "    ")
+		} else {
+			data, err = json.Marshal(object)
+		}
 	default:
 		data, err = yaml.Marshal(object)
 	}
 	if err != nil {
 		return nil, err
+	}
+
+	if len(data) > 0 && data[len(data)-1] != '\n' {
+		// Add a trailing newline if it's missing
+		data = append(data, '\n')
 	}
 
 	return data, nil

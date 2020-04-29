@@ -9,12 +9,10 @@ import (
 )
 
 type Context struct {
+	*Settings
 	f.BaseDir
 
-	config *clientcmdapi.Config
-	// restConfig *rest.Config
-	// context    *clientcmdapi.Context
-
+	config    *clientcmdapi.Config
 	kubectl   dynamic.Interface
 	discovery discovery.DiscoveryInterface
 

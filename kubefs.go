@@ -20,6 +20,9 @@ func main() {
 		pflag.PrintDefaults()
 	}
 
+	showJsonFiles := pflag.Bool("show-json-files", false, "show .json files in file listings")
+	showYamlFiles := pflag.Bool("show-yaml-files", true, "show .yaml files in file listings (defaults to true, use =false to change)")
+	prettyJson := pflag.Bool("pretty-json", false, "Pretty-print json files")
 	kubeconfig := pflag.StringP("kubeconfig", "c", "", "absolute path to the kubeconfig file")
 
 	pflag.Parse()
@@ -31,7 +34,15 @@ func main() {
 
 	mountpoint := args[0]
 
-	k := &kube.Kubernetes{}
+	settings := &kube.Settings{
+		ShowJsonFiles: *showJsonFiles,
+		ShowYamlFiles: *showYamlFiles,
+		PrettyJson:    *prettyJson,
+	}
+
+	k := &kube.Kubernetes{
+		Settings: settings,
+	}
 	k.LoadConfig(*kubeconfig)
 
 	fs := &f.FS{Root: k}

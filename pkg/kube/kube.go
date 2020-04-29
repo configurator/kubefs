@@ -39,9 +39,10 @@ func getDefaultKubeConfig() string {
 }
 
 type Kubernetes struct {
-	config *clientcmdapi.Config
-
+	*Settings
 	f.BaseDir
+
+	config *clientcmdapi.Config
 
 	Contexts map[string]*Context
 }
@@ -98,12 +99,10 @@ func (k *Kubernetes) createContextsMap() error {
 		}
 
 		k.Contexts[name] = &Context{
-			config: k.config,
-			// restConfig: restConfig,
-			// context:    context,
+			Settings:  k.Settings,
+			config:    k.config,
 			kubectl:   kubectl,
 			discovery: dc,
-			// Name:      name,
 		}
 	}
 
