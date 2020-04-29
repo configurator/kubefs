@@ -19,7 +19,7 @@ jobs:
         uses: actions/cache@v1
         with:
           key: build-output-${{ matrix.goos }}-${{ matrix.goarch }}-${{ github.sha }}
-          path: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist
 
       - name: Cache go modules
         if: steps.already-built.outputs.cache-hit != 'true'
@@ -41,11 +41,11 @@ jobs:
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
-        run: go build -o kubefs-${{ matrix.goos }}-${{ matrix.goarch }} .
+        run: go build -o dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }} .
 
       - name: Upload build artifacts
         if: steps.already-built.outputs.cache-hit != 'true'
         uses: actions/upload-artifact@v2
         with:
           name: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
-          path: kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: dist/kubefs-${{ matrix.goos }}-${{ matrix.goarch }}
