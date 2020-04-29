@@ -85,7 +85,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: dist/kubefs-linux-amd64
+          asset_path: kubefs-linux-amd64
           asset_name: kubefs-linux-amd64
           asset_content_type: application/x-executable
       
@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: dist/kubefs-darwin-amd64
+          asset_path: kubefs-darwin-amd64
           asset_name: kubefs-darwin-amd64
           asset_content_type: application/x-mach-executable
       
@@ -101,7 +101,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: dist/kubefs-windows-amd64
+          asset_path: kubefs-windows-amd64
           asset_name: kubefs-windows-amd64
           asset_content_type: application/vnd.microsoft.portable-executable
       
@@ -109,6 +109,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: dist/kubefs-windows-386
+          asset_path: kubefs-windows-386
           asset_name: kubefs-windows-386
           asset_content_type: application/vnd.microsoft.portable-executable
