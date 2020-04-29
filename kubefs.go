@@ -7,13 +7,11 @@ import (
 	"path"
 	"path/filepath"
 
+	"github.com/billziss-gh/cgofuse/fuse"
 	"github.com/spf13/pflag"
 
-	"bazil.org/fuse"
-	"bazil.org/fuse/fs"
-
-	"github.com/configurator/kubefs/pkg/kfuse"
-	"github.com/configurator/kubefs/pkg/kube"
+	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
+	kube "github.com/configurator/kubefs/pkg/kube"
 )
 
 func main() {
@@ -22,7 +20,6 @@ func main() {
 		pflag.PrintDefaults()
 	}
 
-	unmount := pflag.BoolP("unmount", "u", false, "Unmount")
 	kubeconfig := pflag.StringP("kubeconfig", "c", "", "absolute path to the kubeconfig file")
 
 	pflag.Parse()
@@ -34,22 +31,13 @@ func main() {
 
 	mountpoint := args[0]
 
-	if *unmount {
-		err := fuse.Unmount(mountpoint)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	} else {
-		k := &kube.Kubernetes{}
-		k.LoadConfig(*kubeconfig)
+	k := &kube.Kubernetes{}
+	k.LoadConfig(*kubeconfig)
 
-		err := mount(mountpoint, k)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	}
+	fs := &f.FS{Root: k}
+
+	h := fuse.NewFileSystemHost(fs)
+	h.Mount(mountpoint, nil)
 }
 
 func cleanPathAndValidateEmptyDir(mountpoint string) (string, error) {
@@ -86,37 +74,4 @@ func cleanPathAndValidateEmptyDir(mountpoint string) (string, error) {
 	}
 
 	return mountpoint, nil
-}
-
-func mount(mountpoint string, k *kube.Kubernetes) error {
-	mountpoint, err := cleanPathAndValidateEmptyDir(mountpoint)
-	if err != nil {
-		return err
-	}
-
-	c, err := fuse.Mount(mountpoint)
-	if err != nil {
-		return err
-	}
-	defer c.Close()
-
-	kfs := &kfuse.KubeFS{}
-	err = kfs.ReadCurrentUser()
-	if err != nil {
-		fmt.Println("Could not read current uid and gid; defaulting to root")
-	}
-	kfs.RootDir = k.ToDir(kfs)
-
-	fmt.Println("Mounting kubefs on " + mountpoint)
-	err = fs.Serve(c, kfs)
-	if err != nil {
-		return err
-	}
-
-	<-c.Ready
-	if c.MountError != nil {
-		return c.MountError
-	}
-
-	return nil
 }

@@ -2,48 +2,26 @@ package kube
 
 import (
 	"fmt"
-	"strings"
 
-	"bazil.org/fuse/fs"
-	"github.com/configurator/kubefs/pkg/kfuse"
+	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/discovery"
 )
 
-func (c *Context) ToDir(kfs *kfuse.KubeFS) *kfuse.Dir {
-	return &kfuse.Dir{
-		KubeFS:       kfs,
-		ReadDirNames: func() ([]string, error) { return c.readDirNames(kfs) },
-		LookupNode:   func(name string) (fs.Node, error) { return c.lookupNode(kfs, name) },
-	}
-}
+var _ f.Dir = (*Context)(nil)
 
-func SplitGroupVersion(groupVersion string) (string, string) {
-	index := strings.LastIndex(groupVersion, "/")
-	if index == -1 {
-		return "", groupVersion
-	} else {
-		return groupVersion[0:index], groupVersion[index+1:]
-	}
-}
-
-func (c *Context) loadResources(kfs *kfuse.KubeFS) error {
-	if c.resources != nil {
+func (c *Context) loadResources() error {
+	if c.resourceTypes != nil {
 		// Already loaded
 		return nil
 	}
-
-	dc, err := discovery.NewDiscoveryClientForConfig(c.restConfig)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	resources, err := discovery.ServerPreferredResources(dc)
+	resources, err := discovery.ServerPreferredResources(c.discovery)
 	if err != nil {
 		fmt.Println(err)
 		return err
 	}
 
-	result := make(map[string]fs.Node)
+	result := make(map[string]f.Node)
 	for _, list := range resources {
 		group, version := SplitGroupVersion(list.GroupVersion)
 		for _, r := range list.APIResources {
@@ -55,48 +33,51 @@ func (c *Context) loadResources(kfs *kfuse.KubeFS) error {
 				r.Version = version
 			}
 
+			gvr := schema.GroupVersionResource{
+				Group:    group,
+				Version:  version,
+				Resource: r.Name,
+			}
+
 			if r.Namespaced {
-				result[r.Name] = (&NamespacedResource{
-					config:     c.config,
-					restConfig: c.restConfig,
-					context:    c.context,
-					Resource:   r,
-				}).ToDir(kfs)
+				result[r.Name] = &NamespacedResource{
+					Context:      c,
+					ResourceType: r,
+					GVR:          gvr,
+				}
 			} else {
-				result[r.Name] = (&GlobalResource{
-					config:     c.config,
-					restConfig: c.restConfig,
-					context:    c.context,
-					Resource:   r,
-				}).ToDir(kfs)
+				result[r.Name] = &Resource{
+					Context:      c,
+					ResourceType: r,
+					GVR:          gvr,
+				}
 			}
 		}
 	}
 
-	c.resources = result
+	c.resourceTypes = result
 	return nil
 }
 
-func (c *Context) readDirNames(kfs *kfuse.KubeFS) ([]string, error) {
-	err := c.loadResources(kfs)
+func (c *Context) List() ([]string, error) {
+	err := c.loadResources()
 	if err != nil {
 		return nil, err
 	}
 
 	result := []string{}
-	for name := range c.resources {
+	for name := range c.resourceTypes {
 		result = append(result, name)
 	}
 	return result, nil
 }
-
-func (c *Context) lookupNode(kfs *kfuse.KubeFS, name string) (fs.Node, error) {
-	err := c.loadResources(kfs)
+func (c *Context) Get(name string) (f.Node, error) {
+	err := c.loadResources()
 	if err != nil {
 		return nil, err
 	}
 
-	r, _ := c.resources[name]
+	r, _ := c.resourceTypes[name]
 	// r will be nil if not found, which is what we want
 	return r, nil
 }

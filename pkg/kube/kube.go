@@ -5,6 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
+	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
+	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/dynamic"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/tools/clientcmd"
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
@@ -38,7 +41,9 @@ func getDefaultKubeConfig() string {
 type Kubernetes struct {
 	config *clientcmdapi.Config
 
-	Contexts map[string]Context
+	f.BaseDir
+
+	Contexts map[string]*Context
 }
 
 func (k *Kubernetes) LoadConfig(kubeconfig string) error {
@@ -63,7 +68,7 @@ func (k *Kubernetes) LoadConfig(kubeconfig string) error {
 func (k *Kubernetes) createContextsMap() error {
 	config := k.config
 
-	k.Contexts = map[string]Context{}
+	k.Contexts = map[string]*Context{}
 	if config == nil {
 		fmt.Println("Error in createContextsMap(): config == nil")
 		return nil
@@ -80,11 +85,25 @@ func (k *Kubernetes) createContextsMap() error {
 			return err
 		}
 
-		k.Contexts[name] = Context{
-			config:     k.config,
-			restConfig: restConfig,
-			context:    context,
-			Name:       name,
+		kubectl, err := dynamic.NewForConfig(restConfig)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		dc, err := discovery.NewDiscoveryClientForConfig(restConfig)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		k.Contexts[name] = &Context{
+			config: k.config,
+			// restConfig: restConfig,
+			// context:    context,
+			kubectl:   kubectl,
+			discovery: dc,
+			// Name:      name,
 		}
 	}
 

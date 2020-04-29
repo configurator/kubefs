@@ -1,19 +1,12 @@
 package kube
 
 import (
-	"bazil.org/fuse/fs"
-	"github.com/configurator/kubefs/pkg/kfuse"
+	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
 )
 
-func (k *Kubernetes) ToDir(kfs *kfuse.KubeFS) *kfuse.Dir {
-	return &kfuse.Dir{
-		KubeFS:       kfs,
-		ReadDirNames: func() ([]string, error) { return k.readDirNames(kfs) },
-		LookupNode:   func(name string) (fs.Node, error) { return k.lookupNode(kfs, name) },
-	}
-}
+var _ f.Dir = (*Kubernetes)(nil)
 
-func (k *Kubernetes) readDirNames(kfs *kfuse.KubeFS) ([]string, error) {
+func (k *Kubernetes) List() ([]string, error) {
 	result := []string{}
 	for name := range k.Contexts {
 		result = append(result, name)
@@ -22,11 +15,10 @@ func (k *Kubernetes) readDirNames(kfs *kfuse.KubeFS) ([]string, error) {
 	return result, nil
 }
 
-func (k *Kubernetes) lookupNode(kfs *kfuse.KubeFS, name string) (fs.Node, error) {
+func (k *Kubernetes) Get(name string) (f.Node, error) {
 	context, ok := k.Contexts[name]
 	if !ok {
 		return nil, nil
 	}
-
-	return context.ToDir(kfs), nil
+	return context, nil
 }

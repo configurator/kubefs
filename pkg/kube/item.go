@@ -1,17 +1,12 @@
 package kube
 
 import (
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/rest"
-	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
+	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
 )
 
 type Item struct {
-	config     *clientcmdapi.Config
-	restConfig *rest.Config
-	context    *clientcmdapi.Context
-	Resource   metav1.APIResource
-	Namespace  string
-	Name       string
-	Extension  string
+	f.BaseFile
+	Resource  *Resource
+	Name      string
+	Extension string
 }
