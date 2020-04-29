@@ -77,7 +77,9 @@ func (c *Context) Get(name string) (f.Node, error) {
 		return nil, err
 	}
 
-	r, _ := c.resourceTypes[name]
-	// r will be nil if not found, which is what we want
+	r, ok := c.resourceTypes[name]
+	if !ok {
+		return nil, &f.ErrorNotFound{}
+	}
 	return r, nil
 }

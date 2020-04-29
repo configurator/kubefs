@@ -3,6 +3,7 @@ package kube
 import (
 	"encoding/json"
 
+	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
@@ -17,6 +18,11 @@ func (i *Item) ReadEntireContents() ([]byte, error) {
 
 	object, err := kubectl.Resource(r.GVR).Namespace(r.Namespace).Get(i.Name, metav1.GetOptions{})
 	if err != nil {
+		if status, ok := err.(*errors.StatusError); ok {
+			if status.ErrStatus.Code == 404 {
+				return nil, &f.ErrorNotFound{}
+			}
+		}
 		return nil, err
 	}
 
