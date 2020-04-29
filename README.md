@@ -113,4 +113,5 @@ that tries to read them
 
 - [x] Read only
 - [ ] Edit files
-- [ ] Add a file
+- [ ] Create new files
+- [x] Windows support
