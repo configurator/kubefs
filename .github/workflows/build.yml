@@ -14,12 +14,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build
     steps:
-      - name: Cache go modules
-        uses: actions/cache@v1
-        with:
-          key: go-mod-cache
-          path: ~/go/pkg/mod
-
       - name: Checkout
         uses: actions/checkout@v2
 
