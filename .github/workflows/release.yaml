@@ -75,8 +75,7 @@ jobs:
         uses: actions/create-release@v1
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: true
+          release_name: ${{ github.ref }}
       
       - name: Download artifacts
         uses: actions/download-artifact@v2
@@ -85,7 +84,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: kubefs-linux-amd64
+          asset_path: kubefs-linux-amd64/kubefs-linux-amd64
           asset_name: kubefs-linux-amd64
           asset_content_type: application/x-executable
       
@@ -93,7 +92,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: kubefs-darwin-amd64
+          asset_path: kubefs-darwin-amd64/kubefs-darwin-amd64
           asset_name: kubefs-darwin-amd64
           asset_content_type: application/x-mach-executable
       
@@ -101,14 +100,14 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: kubefs-windows-amd64
-          asset_name: kubefs-windows-amd64
+          asset_path: kubefs-windows-amd64.exe/kubefs-windows-amd64.exe
+          asset_name: kubefs-windows-amd64.exe
           asset_content_type: application/vnd.microsoft.portable-executable
       
       - name: Upload release assets
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create-release.outputs.upload_url }}
-          asset_path: kubefs-windows-386
-          asset_name: kubefs-windows-386
+          asset_path: kubefs-windows-386.exe/kubefs-windows-386.exe
+          asset_name: kubefs-windows-386.exe
           asset_content_type: application/vnd.microsoft.portable-executable
