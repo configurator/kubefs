@@ -57,16 +57,24 @@ Mounts the default kubernetes cluster onto dir.
 
 #### Options
 
-- `-u`, `--unmount`:
-
-  Unmounts a previously mounted directory. This will stop the process serving it, and will also work
-  if that process has been killed uncleanly.
-
 - `-c`, `--kubeconfig`:
 
   Like in `kubectl`, you can use the `--kubeconfig` flag to specify an alternate
   `kube.config` file, or pass the `KUBECONFIG` environment flag. All contexts in the passed config
   file will be available.
+
+- `--show-json-files`:
+
+  Show json files in directory listings. By default, they are there but hidden.
+
+- `--show-yaml-files=false`:
+
+  Hide yaml files in directory listings. If you don't combine this with `--show-json-files`,
+  directories will all be empty. Files are still readable, just not listed in directory listings.
+
+- `--pretty-json`:
+
+  When opening `.json` files, pretty-print them with newlines and indentation..
 
 # Files
 
@@ -90,7 +98,7 @@ changed to see the objects in different formats. Currently supported formats are
 - `.json`
 
 These extra formats will not show up in directory listings, but are available to any application
-that tries to read them
+that tries to read them. Omitting the extension also works and returns the default format, yaml.
 
 # Ideas for exploring
 

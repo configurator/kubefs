@@ -22,7 +22,12 @@ func (r *Resource) List() ([]string, error) {
 
 	result := []string{}
 	for _, i := range list.Items {
-		result = append(result, i.GetName()+".yaml")
+		if r.Context.Settings.ShowYamlFiles {
+			result = append(result, i.GetName()+".yaml")
+		}
+		if r.Context.Settings.ShowJsonFiles {
+			result = append(result, i.GetName()+".json")
+		}
 	}
 	return result, nil
 }
