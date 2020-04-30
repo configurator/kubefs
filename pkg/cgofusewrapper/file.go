@@ -6,6 +6,7 @@ import (
 
 type File interface {
 	ReadEntireContents() ([]byte, error)
+	Write([]byte) error
 	Delete() error
 }
 

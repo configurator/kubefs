@@ -1,20 +1,20 @@
 package kube
 
 import (
-	"fmt"
+	"log"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func (i *Item) Delete() error {
-	fmt.Printf("Deleting file %s\n", i.Name)
+func (i *Item) Delete() (err error) {
+	defer LogDeleting("file %s", i.Name)(err)
 
 	r := i.Resource
 	kubectl := r.Context.kubectl
 
-	err := kubectl.Resource(r.GVR).Namespace(r.Namespace).Delete(i.Name, &metav1.DeleteOptions{})
+	err = kubectl.Resource(r.GVR).Namespace(r.Namespace).Delete(i.Name, &metav1.DeleteOptions{})
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 

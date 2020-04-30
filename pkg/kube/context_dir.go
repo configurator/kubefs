@@ -1,7 +1,7 @@
 package kube
 
 import (
-	"fmt"
+	"log"
 
 	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -10,14 +10,17 @@ import (
 
 var _ f.Dir = (*Context)(nil)
 
-func (c *Context) loadResources() error {
+func (c *Context) loadResources() (err error) {
 	if c.resourceTypes != nil {
 		// Already loaded
 		return nil
 	}
+
+	defer LogLoading("resource types for context %s", c.ContextName)(err)
+
 	resources, err := discovery.ServerPreferredResources(c.discovery)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 
@@ -38,18 +41,25 @@ func (c *Context) loadResources() error {
 				Version:  version,
 				Resource: r.Name,
 			}
+			gvk := schema.GroupVersionKind{
+				Group:   group,
+				Version: version,
+				Kind:    r.Kind,
+			}
 
 			if r.Namespaced {
 				result[r.Name] = &NamespacedResource{
 					Context:      c,
 					ResourceType: r,
 					GVR:          gvr,
+					GVK:          gvk,
 				}
 			} else {
 				result[r.Name] = &Resource{
 					Context:      c,
 					ResourceType: r,
 					GVR:          gvr,
+					GVK:          gvk,
 				}
 			}
 		}
@@ -79,7 +89,7 @@ func (c *Context) Get(name string) (f.Node, error) {
 
 	r, ok := c.resourceTypes[name]
 	if !ok {
-		return nil, &f.ErrorNotFound{}
+		return nil, &f.ErrorNotFound{Path: name}
 	}
 	return r, nil
 }

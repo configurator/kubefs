@@ -1,7 +1,7 @@
 package kube
 
 import (
-	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -59,7 +59,7 @@ func (k *Kubernetes) LoadConfig(kubeconfig string) error {
 	k.config = config
 	err = k.createContextsMap()
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return err
 	}
 
@@ -71,7 +71,7 @@ func (k *Kubernetes) createContextsMap() error {
 
 	k.Contexts = map[string]*Context{}
 	if config == nil {
-		fmt.Println("Error in createContextsMap(): config == nil")
+		log.Println("Error in createContextsMap(): config == nil")
 		return nil
 	}
 
@@ -82,27 +82,28 @@ func (k *Kubernetes) createContextsMap() error {
 
 		restConfig, err := clientConfig.ClientConfig()
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return err
 		}
 
 		kubectl, err := dynamic.NewForConfig(restConfig)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return err
 		}
 
 		dc, err := discovery.NewDiscoveryClientForConfig(restConfig)
 		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
 			return err
 		}
 
 		k.Contexts[name] = &Context{
-			Settings:  k.Settings,
-			config:    k.config,
-			kubectl:   kubectl,
-			discovery: dc,
+			ContextName: name,
+			Settings:    k.Settings,
+			config:      k.config,
+			kubectl:     kubectl,
+			discovery:   dc,
 		}
 	}
 

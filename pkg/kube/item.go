@@ -6,9 +6,10 @@ import (
 
 type Item struct {
 	f.BaseFile
-	Resource  *Resource
-	Name      string
-	Extension string
+	Resource         *Resource
+	Name             string
+	Extension        string
+	OriginalContents []byte
 }
 
 var _ f.File = (*Item)(nil)
