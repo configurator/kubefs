@@ -82,3 +82,20 @@ func (fs *FS) OpenEx(path string, fi *fuse.FileInfo_t) int {
 func (fs *FS) CreateEx(string, uint32, *fuse.FileInfo_t) int {
 	return errno.EOPNOTSUPP
 }
+
+func (fs *FS) Unlink(path string) int {
+	node, err := fs.findNode(path)
+	if err != nil {
+		return handleError(err)
+	}
+
+	if file, ok := node.(File); ok {
+		err := file.Delete()
+		if err != nil {
+			return handleError(err)
+		}
+		return 0
+	}
+
+	return errno.EOPNOTSUPP
+}

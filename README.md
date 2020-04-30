@@ -119,7 +119,8 @@ that tries to read them. Omitting the extension also works and returns the defau
 
 # Roadmap
 
-- [x] Read only
-- [ ] Edit files
-- [ ] Create new files
+- [x] List / get all kubernetes objects as files
+- [x] Delete objects
+- [ ] Edit existing objects
+- [ ] Create new objects
 - [x] Windows support
