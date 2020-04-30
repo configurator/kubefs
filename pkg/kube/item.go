@@ -10,3 +10,5 @@ type Item struct {
 	Name      string
 	Extension string
 }
+
+var _ f.File = (*Item)(nil)

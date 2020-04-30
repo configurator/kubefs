@@ -10,7 +10,6 @@ import (
 	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
 )
 
-var _ f.File = (*Item)(nil)
 
 func (i *Item) ReadEntireContents() ([]byte, error) {
 	r := i.Resource

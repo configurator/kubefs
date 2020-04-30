@@ -6,6 +6,7 @@ import (
 
 type File interface {
 	ReadEntireContents() ([]byte, error)
+	Delete() error
 }
 
 type BaseFile struct{}
