@@ -1,18 +1,17 @@
 package cgofusewrapper
 
 import (
-	"fmt"
+	"log"
 	"strings"
 
 	"github.com/billziss-gh/cgofuse/fuse"
 	"github.com/configurator/kubefs/pkg/cgofusewrapper/errno"
 )
 
-const invalidFileHandle = ^uint64(0)
-
 type FS struct {
 	fuse.FileSystemBase
-	Root Dir
+	Handles Handles
+	Root    Dir
 }
 
 var _ fuse.FileSystemInterface = (*FS)(nil)
@@ -43,11 +42,11 @@ func (fs *FS) findNode(path string) (Node, error) {
 
 func handleError(err error) int {
 	if err, ok := err.(FuseError); ok {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
 		return err.ErrorCode()
 	}
 
-	fmt.Printf("Unknown error: %s\n", err)
+	log.Printf("Unknown error: %s\n", err)
 	return errno.EUNKNOWN
 }
 
@@ -68,19 +67,6 @@ func (fs *FS) Getattr(path string, stat *fuse.Stat_t, fh uint64) int {
 		return handleError(err)
 	}
 	return 0
-}
-
-func (fs *FS) OpenEx(path string, fi *fuse.FileInfo_t) int {
-	_, err := fs.findNode(path)
-	if err != nil {
-		return handleError(err)
-	}
-	fi.DirectIo = true
-	return 0
-}
-
-func (fs *FS) CreateEx(string, uint32, *fuse.FileInfo_t) int {
-	return errno.EOPNOTSUPP
 }
 
 func (fs *FS) Unlink(path string) int {

@@ -10,16 +10,16 @@ import (
 	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
 )
 
-
 func (i *Item) ReadEntireContents() ([]byte, error) {
 	r := i.Resource
 	kubectl := r.Context.kubectl
 
 	object, err := kubectl.Resource(r.GVR).Namespace(r.Namespace).Get(i.Name, metav1.GetOptions{})
 	if err != nil {
+		i.OriginalContents = nil
 		if status, ok := err.(*errors.StatusError); ok {
 			if status.ErrStatus.Code == 404 {
-				return nil, &f.ErrorNotFound{}
+				return nil, &f.ErrorNotFound{Path: i.Name}
 			}
 		}
 		return nil, err
@@ -36,7 +36,7 @@ func (i *Item) ReadEntireContents() ([]byte, error) {
 	case "", "yaml":
 		data, err = yaml.Marshal(object)
 	default:
-		err = &f.ErrorNotFound{}
+		err = &f.ErrorNotFound{Path: i.Name}
 	}
 	if err != nil {
 		return nil, err
@@ -46,6 +46,8 @@ func (i *Item) ReadEntireContents() ([]byte, error) {
 		// Add a trailing newline if it's missing
 		data = append(data, '\n')
 	}
+
+	i.OriginalContents = data
 
 	return data, nil
 }

@@ -12,4 +12,5 @@ type NamespacedResource struct {
 	Context      *Context
 	ResourceType metav1.APIResource
 	GVR          schema.GroupVersionResource
+	GVK          schema.GroupVersionKind
 }

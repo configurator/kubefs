@@ -18,7 +18,7 @@ func (k *Kubernetes) List() ([]string, error) {
 func (k *Kubernetes) Get(name string) (f.Node, error) {
 	context, ok := k.Contexts[name]
 	if !ok {
-		return nil, &f.ErrorNotFound{}
+		return nil, &f.ErrorNotFound{Path: name}
 	}
 	return context, nil
 }

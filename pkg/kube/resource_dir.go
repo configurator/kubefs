@@ -1,7 +1,7 @@
 package kube
 
 import (
-	"fmt"
+	"log"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -16,7 +16,7 @@ func (r *Resource) List() ([]string, error) {
 	// Note we use Namespace here; for global resources namespace "" is expected and does nothing
 	list, err := kubectl.Resource(r.GVR).Namespace(r.Namespace).List(metav1.ListOptions{})
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 

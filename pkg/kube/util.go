@@ -1,6 +1,8 @@
 package kube
 
-import "strings"
+import (
+	"strings"
+)
 
 func SplitGroupVersion(groupVersion string) (string, string) {
 	index := strings.LastIndex(groupVersion, "/")

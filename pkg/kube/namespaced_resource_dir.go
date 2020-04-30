@@ -1,7 +1,7 @@
 package kube
 
 import (
-	"fmt"
+	"log"
 	"strings"
 
 	f "github.com/configurator/kubefs/pkg/cgofusewrapper"
@@ -22,7 +22,7 @@ func (n *NamespacedResource) List() ([]string, error) {
 
 	list, err := kubectl.Resource(namespaceGVR).List(metav1.ListOptions{})
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return nil, err
 	}
 
@@ -40,13 +40,14 @@ func (n *NamespacedResource) Get(name string) (f.Node, error) {
 		// - neither of which is a valid kubernetes namespace
 		// This check prevents those programs from going haywire when cding into
 		// a resource directory.
-		return nil, &f.ErrorNotFound{}
+		return nil, &f.ErrorNotFound{Path: name}
 	}
 
 	return &Resource{
 		Context:      n.Context,
 		ResourceType: n.ResourceType,
 		GVR:          n.GVR,
+		GVK:          n.GVK,
 		Namespace:    name,
 	}, nil
 }

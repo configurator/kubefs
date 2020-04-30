@@ -17,4 +17,5 @@ type Context struct {
 	discovery discovery.DiscoveryInterface
 
 	resourceTypes map[string]f.Node
+	ContextName   string
 }
