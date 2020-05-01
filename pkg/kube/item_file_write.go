@@ -2,7 +2,6 @@ package kube
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/yaml"
 )
@@ -15,21 +14,33 @@ func (i *Item) Write(data []byte) error {
 	// 1. remove some fields which are not allowed to be set in a server-side apply, and cause conflicts
 	// 2. set the namespace, name, apiVersion, and kind, overriding what's in the file
 	//    this allows copying one object into another, and also creating objects by touching files
-	object := &unstructured.Unstructured{}
+	object := map[string]interface{}{}
 	err := yaml.Unmarshal(data, object)
 	if err != nil {
 		return err
 	}
 
-	object.SetManagedFields(nil)
-	object.SetGeneration(0)
-	object.SetResourceVersion("")
-	object.SetSelfLink("")
-	object.SetUID("")
+	// Get or create the metadata subkey
+	// If it's not a json object, overrides it with a json object
+	metadataUntyped, _ := object["metadata"]
+	metadata, _ := metadataUntyped.(map[string]interface{})
+	if metadata == nil {
+		metadata = make(map[string]interface{})
+		object["metadata"] = metadata
+	}
 
-	object.SetGroupVersionKind(i.Resource.GVK)
-	object.SetNamespace(i.Resource.Namespace)
-	object.SetName(i.Name)
+	// Clear conflict-inducing fields
+	delete(metadata, "managedFields")
+	delete(metadata, "generation")
+	delete(metadata, "resourceVersion")
+	delete(metadata, "selfLink")
+	delete(metadata, "uid")
+
+	// Set fields known by file path
+	object["apiVersion"] = r.GVK.GroupVersion().String()
+	object["kind"] = r.GVK.Kind
+	metadata["namespace"] = r.Namespace
+	metadata["name"] = i.Name
 
 	newYaml, err := yaml.Marshal(object)
 	if err != nil {
