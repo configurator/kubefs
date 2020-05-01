@@ -121,7 +121,15 @@ that tries to read them. Omitting the extension also works and returns the defau
 # Roadmap
 
 - [x] List / get all kubernetes objects as files
-- [x] Delete objects
-- [ ] Edit existing objects
-- [ ] Create new objects
+- [x] Linux support
+- [x] Mac support
 - [x] Windows support
+- [x] Delete objects
+- [x] Edit existing objects
+- [x] Create new objects
+- [ ] Support file system watchers, so IDEs know to reload the file after saving
+- [ ] Connect the file system watchers to kubernetes watchers so files can be reloaded when changed
+      on the server
+- [ ] When writing files fails, add a comment to the top explaining the failure
+- [ ] When reading a missing file, allow the read with some dummy data as a result,
+      which will help create new files in IDEs
