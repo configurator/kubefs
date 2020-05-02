@@ -67,7 +67,7 @@ func (fs *FS) openOrCreate(path string, fi *fuse.FileInfo_t, canCreate bool) int
 	if _, ok := node.(Dir); ok {
 		return errno.EISDIR
 	}
-	return errno.EOPNOTSUPP
+	return errno.ENOSYS
 }
 
 func (fs *FS) OpenEx(path string, fi *fuse.FileInfo_t) int {

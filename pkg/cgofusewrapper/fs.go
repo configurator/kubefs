@@ -46,7 +46,7 @@ func handleError(err error) int {
 	}
 
 	log.Printf("Unknown error: %s\n", err)
-	return errno.EUNKNOWN
+	return errno.EIO
 }
 
 func fullStat(node Node, stat *fuse.Stat_t) error {

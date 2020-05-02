@@ -23,5 +23,5 @@ func (fs *FS) Unlink(path string) int {
 		return 0
 	}
 
-	return errno.EOPNOTSUPP
+	return errno.ENOSYS
 }
