@@ -53,7 +53,7 @@ func (e *ErrorUnknown) Error() string {
 	return fmt.Sprintf("Error %s accessing path %s", e.Message, e.Path)
 }
 func (e *ErrorUnknown) ErrorCode() int {
-	return errno.EUNKNOWN
+	return errno.EIO
 }
 
 type ErrorNotImplemented struct{}
@@ -62,5 +62,5 @@ func (e *ErrorNotImplemented) Error() string {
 	return "Not implemented"
 }
 func (e *ErrorNotImplemented) ErrorCode() int {
-	return errno.EOPNOTSUPP
+	return errno.ENOSYS
 }

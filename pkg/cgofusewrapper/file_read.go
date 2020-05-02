@@ -20,7 +20,7 @@ func (fs *FS) Read(path string, buff []byte, offset int64, fh uint64) int {
 		if _, ok := node.(Dir); ok {
 			return errno.EISDIR
 		}
-		return errno.EUNKNOWN
+		return errno.EIO
 	}
 
 	contents, err := file.ReadEntireContents()
