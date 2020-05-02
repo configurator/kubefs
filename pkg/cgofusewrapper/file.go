@@ -1,6 +1,8 @@
 package cgofusewrapper
 
 import (
+	"log"
+
 	"github.com/configurator/kubefs/pkg/cgofusewrapper/errno"
 )
 
@@ -18,7 +20,10 @@ func (f *BaseFile) Attr(stat *Stat) (FileType, FilePermissions, error) {
 	return FileType_File, FilePermissions_Read, nil
 }
 
+// Read reads data from a file.
 func (fs *FS) Read(path string, buff []byte, offset int64, fh uint64) int {
+	log.Printf("fs.Read(%v, buffer, %#x, fh)\n", path, offset)
+
 	node, err := fs.findNode(path)
 	if err != nil {
 		return handleError(err)

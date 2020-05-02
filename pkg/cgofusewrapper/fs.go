@@ -9,7 +9,6 @@ import (
 )
 
 type FS struct {
-	fuse.FileSystemBase
 	Handles Handles
 	Root    Dir
 }
@@ -56,7 +55,10 @@ func fullStat(node Node, stat *fuse.Stat_t) error {
 	return err
 }
 
+// Getattr gets file attributes.
 func (fs *FS) Getattr(path string, stat *fuse.Stat_t, fh uint64) int {
+	log.Printf("fs.Getattr(%v, stat, fh)\n", path)
+
 	node, err := fs.findNode(path)
 	if err != nil {
 		return handleError(err)
@@ -69,7 +71,10 @@ func (fs *FS) Getattr(path string, stat *fuse.Stat_t, fh uint64) int {
 	return 0
 }
 
+// Unlink removes a file.
 func (fs *FS) Unlink(path string) int {
+	log.Printf("fs.Unlink(%v)\n", path)
+
 	node, err := fs.findNode(path)
 	if err != nil {
 		return handleError(err)

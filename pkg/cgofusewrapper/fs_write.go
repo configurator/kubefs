@@ -71,14 +71,19 @@ func (fs *FS) openOrCreate(path string, fi *fuse.FileInfo_t, canCreate bool) int
 }
 
 func (fs *FS) OpenEx(path string, fi *fuse.FileInfo_t) int {
+	log.Printf("fs.OpenEx(%v, result)\n", path)
 	return fs.openOrCreate(path, fi, true)
 }
 
-func (fs *FS) CreateEx(path string, _ uint32, fi *fuse.FileInfo_t) int {
+func (fs *FS) CreateEx(path string, flags uint32, fi *fuse.FileInfo_t) int {
+	log.Printf("fs.CreateEx(%v, %#x, result)\n", path, flags)
 	return fs.openOrCreate(path, fi, false)
 }
 
+// Truncate changes the size of a file.
 func (fs *FS) Truncate(path string, size int64, fh uint64) (errn int) {
+	log.Printf("fs.Truncate(%v, %#x, fh)\n", path, size)
+
 	handle, e := fs.getFileHandle(path)
 	if e != 0 {
 		return e
@@ -97,7 +102,10 @@ func (fs *FS) Truncate(path string, size int64, fh uint64) (errn int) {
 	return 0
 }
 
+// Write writes data to a file.
 func (fs *FS) Write(path string, buff []byte, ofst int64, fh uint64) int {
+	log.Printf("fs.Write(%v, data, %#x, fh)\n", path, ofst)
+
 	handle, errn := fs.getFileHandle(path)
 	if errn != 0 {
 		return errno.EIO
@@ -133,7 +141,10 @@ func writeFileHandle(handle *FileHandle, buff []byte, offset int64) {
 	copy(handle.Data[offset:], buff)
 }
 
+// Release closes an open file.
 func (fs *FS) Release(path string, fh uint64) int {
+	log.Printf("fs.Release(%v, fh)\n", path)
+
 	handle, errn := fs.getFileHandle(path)
 	if errn != 0 {
 		return errn
