@@ -78,12 +78,6 @@ func (fs *FS) Chown(path string, uid uint32, gid uint32) int {
 	return errno.ENOSYS
 }
 
-// Utimens changes the access and modification times of a file.
-func (fs *FS) Utimens(path string, tmsp []fuse.Timespec) int {
-	log.Printf("(unimplemented) fs.Utimens(%v, %#v)\n", path, tmsp)
-	return errno.ENOSYS
-}
-
 // Access checks file access permissions.
 func (fs *FS) Access(path string, mask uint32) int {
 	log.Printf("(unimplemented) fs.Access(%v, %#o)\n", path, mask)
