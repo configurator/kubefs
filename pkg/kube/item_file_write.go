@@ -1,12 +1,17 @@
 package kube
 
 import (
+	"github.com/configurator/kubefs/pkg/cgofusewrapper"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/yaml"
 )
 
 func (i *Item) Write(data []byte) error {
+	if i.Resource.Context.Readonly {
+		return &cgofusewrapper.ErrorNotImplemented{}
+	}
+
 	r := i.Resource
 	kubectl := r.Context.kubectl
 
