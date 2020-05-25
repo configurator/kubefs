@@ -20,9 +20,11 @@ func main() {
 		pflag.PrintDefaults()
 	}
 
+	readonly := pflag.Bool("readonly", false, "readonly mode - never allow any write or change to the cluster")
+
 	showJsonFiles := pflag.Bool("show-json-files", false, "show .json files in file listings")
 	showYamlFiles := pflag.Bool("show-yaml-files", true, "show .yaml files in file listings (defaults to true, use =false to change)")
-	prettyJson := pflag.Bool("pretty-json", false, "Pretty-print json files")
+	prettyJson := pflag.Bool("pretty-json", false, "pretty-print json files")
 	kubeconfig := pflag.StringP("kubeconfig", "c", "", "absolute path to the kubeconfig file")
 
 	pflag.Parse()
@@ -38,6 +40,7 @@ func main() {
 		ShowJsonFiles: *showJsonFiles,
 		ShowYamlFiles: *showYamlFiles,
 		PrettyJson:    *prettyJson,
+		Readonly:      *readonly,
 	}
 
 	k := &kube.Kubernetes{
@@ -45,7 +48,10 @@ func main() {
 	}
 	k.LoadConfig(*kubeconfig)
 
-	fs := &f.FS{Root: k}
+	fs := &f.FS{
+		Root:     k,
+		Readonly: *readonly,
+	}
 
 	h := fuse.NewFileSystemHost(fs)
 	h.Mount(mountpoint, nil)

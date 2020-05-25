@@ -9,8 +9,9 @@ import (
 )
 
 type FS struct {
-	Handles Handles
-	Root    Dir
+	Handles  Handles
+	Root     Dir
+	Readonly bool
 }
 
 var _ fuse.FileSystemInterface = (*FS)(nil)

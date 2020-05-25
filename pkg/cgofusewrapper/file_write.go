@@ -83,6 +83,9 @@ func (fs *FS) CreateEx(path string, flags uint32, fi *fuse.FileInfo_t) int {
 // Truncate changes the size of a file.
 func (fs *FS) Truncate(path string, size int64, fh uint64) (errn int) {
 	log.Printf("fs.Truncate(%v, %#x, fh)\n", path, size)
+	if fs.Readonly {
+		return errno.ENOSYS
+	}
 
 	handle, e := fs.getFileHandle(path)
 	if e != 0 {
@@ -105,6 +108,9 @@ func (fs *FS) Truncate(path string, size int64, fh uint64) (errn int) {
 // Write writes data to a file.
 func (fs *FS) Write(path string, buff []byte, ofst int64, fh uint64) int {
 	log.Printf("fs.Write(%v, data, %#x, fh)\n", path, ofst)
+	if fs.Readonly {
+		return errno.ENOSYS
+	}
 
 	handle, errn := fs.getFileHandle(path)
 	if errn != 0 {
@@ -144,6 +150,9 @@ func writeFileHandle(handle *FileHandle, buff []byte, offset int64) {
 // Release closes an open file.
 func (fs *FS) Release(path string, fh uint64) int {
 	log.Printf("fs.Release(%v, fh)\n", path)
+	if fs.Readonly {
+		return errno.ENOSYS
+	}
 
 	handle, errn := fs.getFileHandle(path)
 	if errn != 0 {
