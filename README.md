@@ -76,6 +76,10 @@ Mounts the default kubernetes cluster onto dir.
 - `--pretty-json`:
 
   When opening `.json` files, pretty-print them with newlines and indentation..
+  
+- `--readonly`
+
+  Mounts everything in read only mode so you'll feel safe (added in v0.4)
 
 # Files
 
