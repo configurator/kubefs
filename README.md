@@ -44,7 +44,7 @@ For MacOS you will need [osxfuse](https://github.com/osxfuse/osxfuse/releases):
 or you can install with brew formula:
 
 ```shell
-$ brew install osxfuse
+$ brew cask install osxfuse
 ```
 
 For Windows you will need [WinFSP](http://www.secfs.net/winfsp/).
