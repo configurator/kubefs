@@ -44,7 +44,7 @@ For MacOS you will need [osxfuse](https://github.com/osxfuse/osxfuse/releases):
 or you can install with brew formula:
 
 ```shell
-$ brew install osxfuse
+$ brew cask install osxfuse
 ```
 
 For Windows you will need [WinFSP](http://www.secfs.net/winfsp/).
@@ -76,6 +76,10 @@ Mounts the default kubernetes cluster onto dir.
 - `--pretty-json`:
 
   When opening `.json` files, pretty-print them with newlines and indentation..
+  
+- `--readonly`
+
+  Mounts everything in read only mode so you'll feel safe (added in v0.4)
 
 # Files
 
